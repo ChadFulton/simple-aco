@@ -1,6 +1,7 @@
 from settings import *
 from world import World
 from ant import Ant
+import sys, argparse
 
 def simulate(n):
   """Run an ant-colony optimization simulation"""
@@ -20,9 +21,9 @@ def simulate(n):
 
   return world
 
-def main(n):
+def main():
   p = []
-  for i in range(100):
+  for i in range(trials):
     world = simulate(n)
     pheromones = world.memo_history[-1]
     p.append(float(pheromones[NEST | FOOD])**alpha / (float(pheromones[NEST | FOOD])**alpha + float(pheromones[LONG_BRANCH | NEST])**alpha))
@@ -32,8 +33,22 @@ def main(n):
   print 'Convergence to long path: ', (float(len(fail)) / float(len(p)))
 
 if __name__ == "__main__":
-    import sys
-    args = {
-      'n': int(sys.argv[1]) if len(sys.argv) > 1 else n,
-    }
-    main(**args)
+  parser = argparse.ArgumentParser(description='Run Ant Colony Optimization simulation.')
+  parser.add_argument('-i', help='Number of trials (default=%d)' % trials, type=int, default = trials)
+  parser.add_argument('-n', help='Number of ants (default=%d)' % n, type=int, default = n)
+  parser.add_argument('-T', help='Number of steps each ant takes (default=%d)' % T, type=int, default = T)
+  parser.add_argument('-d', '--deposit', help='Amount of pheremone deposited at each step (default=%.1f)' % deposit, type=float, default = deposit)
+  parser.add_argument('-a', '--alpha', help='Pheremone amplification parameter (default=%.1f)' % alpha, type=float, default = alpha)
+  parser.add_argument('-r', '--rho', help='Rate of pheromone evaporation (default=%.1f)' % rho, type=float, default = rho)
+  parser.add_argument('-c', '--autocatalysis', help='Is deposit inversely related to found path length? (default=%s)' % str(autocatalysis), action="store_true", default = autocatalysis)
+  args = parser.parse_args()
+
+  trials = args.i
+  n = args.n
+  T = args.T
+  deposit = args.deposit
+  alpha = args.alpha
+  rho = args.rho
+  autocatalysis = args.autocatalysis
+
+  main()
