@@ -30,7 +30,16 @@ def main():
   fail = [i for i in p if i <= 0.5]
   success = [i for i in p if i >= 0.5]
 
-  print 'Convergence to long path: ', (float(len(fail)) / float(len(p)))
+  print ''
+  print 'Simple ACO - Simulation Results'
+  print '==========================================='
+  print '| trials = %d, T = %d, n = %d' % (trials, T, n)
+  print '| deposit = %.1f, alpha = %.1f, rho = %.1f' % (deposit, alpha, rho)
+  print '| Autocatalysis = %s' % str(autocatalysis)
+  print '|'
+  print '| Convergence to long path: %d%%' % (float(len(fail)) / float(len(p))*100)
+  print '==========================================='
+  print ''
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Run Ant Colony Optimization simulation.')
