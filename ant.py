@@ -57,7 +57,7 @@ class Ant(Agent):
     """Select the next node the ant travels to"""
 
     if self.direction == self.FORWARDS:
-      # Get the pheremones on the arcs to each possible destination node
+      # Get the pheromones on the arcs to each possible destination node
       pheromones = self.world.get_pheromones(self.trip[-1])
 
       # If there is more than one node available, don't go to the one you were

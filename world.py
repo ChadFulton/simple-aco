@@ -21,7 +21,7 @@ class World(Agent):
             self.arcs.append(start | end)
 
     # World pheromone levels
-    self.base         = { arc:0 for arc in self.arcs } # initial pheremone levels
+    self.base         = { arc:0 for arc in self.arcs } # initial pheromone levels
     self.current      = self.base.copy() # pheromone changes for the period
     self.history      = [] # history of pheromone settings for each period
     self.memo         = { arc:1 for arc in self.arcs } # running tally of pheromones on nodes
@@ -31,7 +31,7 @@ class World(Agent):
     for arc, level in self.current.iteritems():
       # add the new level
       self.memo[arc] += level
-      # evaporate some pheremone
+      # evaporate some pheromone
       self.memo[arc] = (1 - rho) * self.memo[arc]
 
     self.memo_history.append(self.memo.copy())

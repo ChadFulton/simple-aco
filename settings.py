@@ -15,7 +15,7 @@ def reverse_node(node):
 trials = 100          # number of trials
 T = 1000              # number of steps
 n = 2                 # number of ants
-deposit = 1           # amount of pheremone to deposit
+deposit = 1           # amount of pheromone to deposit
 autocatalysis = False # is deposit inversely related to found path length?
 alpha = 1             # pheromone amplification
 rho = 0.00            # evaporation
