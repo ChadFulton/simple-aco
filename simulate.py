@@ -1,7 +1,7 @@
 from settings import *
 from world import World
 from ant import Ant
-import sys, argparse
+import argparse, time
 
 def simulate(n):
   """Run an ant-colony optimization simulation"""
@@ -22,6 +22,8 @@ def simulate(n):
   return world
 
 def main():
+  t0 = time.time()
+
   p = []
   for i in range(trials):
     world = simulate(n)
@@ -29,6 +31,8 @@ def main():
     p.append(float(pheromones[NEST | FOOD])**alpha / (float(pheromones[NEST | FOOD])**alpha + float(pheromones[LONG_BRANCH | NEST])**alpha))
   fail = [i for i in p if i <= 0.5]
   success = [i for i in p if i >= 0.5]
+
+  t1 = time.time()
 
   print ''
   print 'Simple ACO - Simulation Results'
@@ -38,6 +42,7 @@ def main():
   print '| Autocatalysis = %s' % str(autocatalysis)
   print '|'
   print '| Convergence to long path: %d%%' % (float(len(fail)) / float(len(p))*100)
+  print '| (in %.1f seconds)' % (t1-t0)
   print '==========================================='
   print ''
 
