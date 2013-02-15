@@ -43,6 +43,7 @@ def main():
   print '|'
   print '| Convergence to long path: %d%%' % (float(len(fail)) / float(len(p))*100)
   print '| (in %.1f seconds)' % (t1-t0)
+  print '| Number of paths found: ', world.path_lengths
   print '==========================================='
   print ''
 

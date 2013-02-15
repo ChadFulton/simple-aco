@@ -26,6 +26,7 @@ class World(Agent):
     self.history      = [] # history of pheromone settings for each period
     self.memo         = { arc:1 for arc in self.arcs } # running tally of pheromones on nodes
     self.memo_history = [] # history of runny tally for each period
+    self.path_lengths = {}
 
   def advance(self):
     for arc, level in self.current.iteritems():
@@ -56,3 +57,8 @@ class World(Agent):
     #print reverse_node(ant.trip[-1]), '|', reverse_node(ant.trip[-2])
     level = deposit / ant.return_length if autocatalysis else deposit
     self.current[ant.trip[-1] | ant.trip[-2]] += level
+
+    if ant.trip[-2] == self.TERMINAL_NODE:
+      if ant.return_length not in self.path_lengths:
+        self.path_lengths[ant.return_length] = 0
+      self.path_lengths[ant.return_length] += 1

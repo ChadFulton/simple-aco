@@ -26,3 +26,10 @@ double_bridge = {
   LONG_BRANCH: [NEST, FOOD],
   FOOD:        [LONG_BRANCH, NEST]
 }
+
+# Graph 2
+hard_graph = {
+  NEST:        [FOOD, LONG_BRANCH],
+  LONG_BRANCH: [NEST, FOOD],
+  FOOD:        [LONG_BRANCH, NEST]
+}
