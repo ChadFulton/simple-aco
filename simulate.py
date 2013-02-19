@@ -24,6 +24,7 @@ def simulate(n, T, graph, source_node, terminal_node):
   return world
 
 def main():
+  """Function called by running simulate.py on the command line"""
   t0 = time.time()
 
   p = []
@@ -50,22 +51,41 @@ def main():
   print ''
 
 if __name__ == "__main__":
+  # Set up the command line arguments
   parser = argparse.ArgumentParser(description='Run Ant Colony Optimization simulation.')
-  parser.add_argument('-i', help='Number of trials (default=%d)' % settings.trials, type=int, default = settings.trials)
-  parser.add_argument('-n', help='Number of ants (default=%d)' % settings.n, type=int, default = settings.n)
-  parser.add_argument('-T', help='Number of steps each ant takes (default=%d)' % settings.T, type=int, default = settings.T)
-  parser.add_argument('-d', '--deposit', help='Amount of pheromone deposited at each step (default=%.1f)' % settings.deposit, type=float, default = settings.deposit)
-  parser.add_argument('-a', '--alpha', help='pheromone amplification parameter (default=%.1f)' % settings.alpha, type=float, default = settings.alpha)
-  parser.add_argument('-r', '--rho', help='Rate of pheromone evaporation (default=%.1f)' % settings.rho, type=float, default = settings.rho)
-  parser.add_argument('-c', '--autocatalysis', help='Is deposit inversely related to found path length? (default=%s)' % str(settings.autocatalysis), action="store_true", default = settings.autocatalysis)
+  parser.add_argument('-i',
+                      help='Number of trials (default=%d)' % settings.trials,
+                      type=int, default = settings.trials
+                     )
+  parser.add_argument('-n',
+                      help='Number of ants (default=%d)' % settings.n,
+                      type=int, default = settings.n
+                     )
+  parser.add_argument('-T',
+                      help='Number of steps each ant takes (default=%d)' % settings.T,
+                      type=int, default = settings.T
+                     )
+  parser.add_argument('-d', '--deposit',
+                      help='Amount of pheromone deposited at each step (default=%.1f)' % settings.deposit,
+                      type=float, default = settings.deposit
+                     )
+  parser.add_argument('-a', '--alpha',
+                      help='pheromone amplification parameter (default=%.1f)' % settings.alpha,
+                      type=float, default = settings.alpha
+                     )
+  parser.add_argument('-r', '--rho',
+                      help='Rate of pheromone evaporation (default=%.1f)' % settings.rho,
+                      type=float, default = settings.rho
+                     )
+  parser.add_argument('-c', '--autocatalysis',
+                      help='Is deposit inversely related to found path length? (default=%s)' % str(settings.autocatalysis),
+                      action="store_true", default = settings.autocatalysis
+                     )
   args = parser.parse_args()
 
-  settings.trials = args.i
-  settings.n = args.n
-  settings.T = args.T
-  settings.deposit = args.deposit
-  settings.alpha = args.alpha
-  settings.rho = args.rho
-  settings.autocatalysis = args.autocatalysis
+  # Modify the global settings based on the given arguments
+  for name in ['i', 'n', 'T', 'deposit', 'alpha', 'rho', 'autocatalysis']:
+    setattr(settings, name, getattr(args, name))
 
+  # Initialize the simulation
   main()

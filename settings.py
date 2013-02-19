@@ -18,7 +18,7 @@ n = 2                 # number of ants
 deposit = 1           # amount of pheromone to deposit
 autocatalysis = False # is deposit inversely related to found path length?
 alpha = 1             # pheromone amplification
-rho = 0.00            # evaporation
+rho = 0.00            # evaporation rate
 
 # Graphs
 double_bridge = {
