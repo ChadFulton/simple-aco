@@ -1,6 +1,6 @@
-from settings import *
 from agent import Agent
 from random import uniform
+import settings
 
 class Ant(Agent):
   FORWARDS  = 0
@@ -66,7 +66,7 @@ class Ant(Agent):
         del pheromones[self.trip[-2]]
 
       nodes = pheromones.keys()
-      levels = map(lambda i: i**alpha, pheromones.values())
+      levels = map(lambda i: i**settings.alpha, pheromones.values())
       ranges = map(lambda i: float(sum(levels[:i+1])), range(len(levels)))
 
       # Get a random draw from a standard uniform distribution

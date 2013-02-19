@@ -1,6 +1,6 @@
-from settings import *
 from agent import Agent
 from ant import Ant
+import settings
 
 class World(Agent):
 
@@ -33,7 +33,7 @@ class World(Agent):
       # add the new level
       self.memo[arc] += level
       # evaporate some pheromone
-      self.memo[arc] = (1 - rho) * self.memo[arc]
+      self.memo[arc] = (1 - settings.rho) * self.memo[arc]
 
     self.memo_history.append(self.memo.copy())
     self.history.append(self.current)
@@ -55,7 +55,7 @@ class World(Agent):
 
   def update(self, ant):
     #print reverse_node(ant.trip[-1]), '|', reverse_node(ant.trip[-2])
-    level = deposit / ant.return_length if autocatalysis else deposit
+    level = settings.deposit / ant.return_length if settings.autocatalysis else settings.deposit
     self.current[ant.trip[-1] | ant.trip[-2]] += level
 
     if ant.trip[-2] == self.TERMINAL_NODE:
