@@ -27,11 +27,16 @@ def main():
   """Function called by running simulate.py on the command line"""
   t0 = time.time()
 
+  path_lengths = {}
   p = []
   for i in range(settings.trials):
     world = simulate(settings.n, settings.T, graph=settings.double_bridge, source_node = settings.NEST, terminal_node = settings.FOOD);
     pheromones = world.memo_history[-1]
     p.append(float(pheromones[settings.NEST | settings.FOOD])**settings.alpha / (float(pheromones[settings.NEST | settings.FOOD])**settings.alpha + float(pheromones[settings.LONG_BRANCH | settings.NEST])**settings.alpha))
+    for path_length, n in world.path_lengths.iteritems():
+      if path_length not in path_lengths:
+        path_lengths[path_length] = 0
+      path_lengths[path_length] += n
   fail = [i for i in p if i <= 0.5]
   success = [i for i in p if i >= 0.5]
 
@@ -46,7 +51,7 @@ def main():
   print '|'
   print '| Convergence to long path: %d%%' % (float(len(fail)) / float(len(p))*100)
   print '| (in %.1f seconds)' % (t1-t0)
-  print '| Number of paths found: ', world.path_lengths
+  print '| Number of paths found: ', path_lengths
   print '==========================================='
   print ''
 
