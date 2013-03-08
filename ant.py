@@ -3,6 +3,7 @@ from random import uniform
 import settings
 
 class Ant(Agent):
+  """The agent class for an ant"""
   FORWARDS  = 0
   BACKWARDS = 1
 
