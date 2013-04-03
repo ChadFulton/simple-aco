@@ -3,62 +3,62 @@ from ant import Ant
 import settings
 import argparse, time
 
-def simulate(n, T, graph, source_node, terminal_node):
-  """Run an ant-colony optimization simulation"""
+def simulate(trials, n, T, graph):
+  """Run i trials of an ant-colony optimization simulation"""
 
-  # Instantiate the world
-  world = World(graph, source_node = source_node, terminal_node = terminal_node)
-  
-  # Create the ants
-  for i in range(n):
-    world.populate(
-      Ant(world, world.SOURCE_NODE)
-    )
-
-  # Make the ants move until convergence
-  for t in range(T):
+  worlds = []
+  for j in range(trials):
+    # Instantiate the world
+    world = World(graph)
+    
+    # Create the ants
     for i in range(n):
-      world.ants[i].move()
-    world.advance()
+      world.populate(
+        Ant(world)
+      )
 
-  return world
+    # Make the ants move until convergence
+    for t in range(T):
+      for i in range(n):
+        world.ants[i].move()
+      world.advance()
 
-def main():
+    worlds.append(world)
+
+  return worlds
+
+def main(profile=False):
   """Function called by running simulate.py on the command line"""
   t0 = time.time()
 
-  path_lengths = {}
-  p = []
-  for i in range(settings.trials):
-    world = simulate(settings.n, settings.T, graph=settings.double_bridge, source_node = settings.NEST, terminal_node = settings.FOOD);
-    pheromones = world.memo_history[-1]
-    p.append(float(pheromones[settings.NEST | settings.FOOD])**settings.alpha / (float(pheromones[settings.NEST | settings.FOOD])**settings.alpha + float(pheromones[settings.LONG_BRANCH | settings.NEST])**settings.alpha))
-    for path_length, n in world.path_lengths.iteritems():
-      if path_length not in path_lengths:
-        path_lengths[path_length] = 0
-      path_lengths[path_length] += n
-  fail = [i for i in p if i <= 0.5]
-  success = [i for i in p if i >= 0.5]
+  # Results from the simulations
+  history = []
+  worlds = simulate(settings.trials, settings.n, settings.T, graph=settings.graphs[settings.graph]);
+  history.append({k:round(float(v)/float(sum(worlds[-1].path_lengths.values())), 2)*100 for k,v in worlds[-1].path_lengths.iteritems()})
 
   t1 = time.time()
 
-  print ''
-  print 'Simple ACO - Simulation Results'
-  print '==========================================='
-  print '| trials = %d, T = %d, n = %d' % (settings.trials, settings.T, settings.n)
-  print '| deposit = %.1f, alpha = %.1f, rho = %.1f' % (settings.deposit, settings.alpha, settings.rho)
-  print '| Autocatalysis = %s' % str(settings.autocatalysis)
-  print '|'
-  print '| Convergence to long path: %d%%' % (float(len(fail)) / float(len(p))*100)
-  print '| (in %.1f seconds)' % (t1-t0)
-  print '| Number of paths found: ', path_lengths
-  print '==========================================='
-  print ''
+  if not profile:
+    print ''
+    print 'Simple ACO - Simulation Results (in %.1f seconds)' % (t1-t0)
+    print '==========================================='
+    print '| trials = %d, T = %d, n = %d' % (settings.trials, settings.T, settings.n)
+    print '| deposit = %.1f, alpha = %.2f, rho = %.2f' % (settings.deposit, settings.alpha, settings.rho)
+    print '| Autocatalysis = %s' % str(settings.autocatalysis)
+    print '|'
+    print '| Convergence to the shortest path %0.f%% ' % (history[-1][min(history[-1].keys())] / sum(history[-1].values())*100.0)
+    print '| Pct of traversals by path length: ', history[-1]
+    print '==========================================='
+    print ''
 
 if __name__ == "__main__":
   # Set up the command line arguments
   parser = argparse.ArgumentParser(description='Run Ant Colony Optimization simulation.')
-  parser.add_argument('-i',
+  parser.add_argument('-g', '--graph',
+                      help='Graph to use (default=%s)' % settings.graph,
+                      default = settings.graph, choices=settings.graphs.keys()
+                     )
+  parser.add_argument('-i', '--trials',
                       help='Number of trials (default=%d)' % settings.trials,
                       type=int, default = settings.trials
                      )
@@ -86,11 +86,19 @@ if __name__ == "__main__":
                       help='Is deposit inversely related to found path length? (default=%s)' % str(settings.autocatalysis),
                       action="store_true", default = settings.autocatalysis
                      )
+  parser.add_argument('-p', '--profile',
+                      help='Profile the ACO simulation? (default=%s)' % str(False),
+                      action="store_true", default = False
+                     )
   args = parser.parse_args()
 
   # Modify the global settings based on the given arguments
-  for name in ['i', 'n', 'T', 'deposit', 'alpha', 'rho', 'autocatalysis']:
+  for name in ['graph', 'trials', 'n', 'T', 'deposit', 'alpha', 'rho', 'autocatalysis']:
     setattr(settings, name, getattr(args, name))
 
   # Initialize the simulation
-  main()
+  if args.profile:
+    import cProfile
+    cProfile.run('main(True)')
+  else:
+    main();
